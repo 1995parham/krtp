@@ -19,6 +19,7 @@ class RTPPacket {
   constructor(payload, sequenceNumber, ssrc, timestamp = 0, payloadType = 95) {
     this.payload = payload;
     this.sequenceNumber = sequenceNumber;
+    this.ssrc = ssrc;
     this.payloadType = payloadType;
     this.timestamp = timestamp;
   }
