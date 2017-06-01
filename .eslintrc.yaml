@@ -55,3 +55,4 @@
         after: true
     space-unary-ops: 2
     import/no-commonjs: 0
+    import/no-nodejs-modules: 0
