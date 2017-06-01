@@ -9,6 +9,7 @@
  */
 const crypto = require('crypto');
 const RTPPacket = require('./rtp-packet');
+const dgram = require('dgram');
 
 
 /**
@@ -23,18 +24,37 @@ class RTPSession {
   constructor(port) {
     /** @member {number} */
     this.port = port;
+
     /** @member {number} */
     this.sequenceNumber = crypto.randomBytes(2).readUInt16BE();
+
     /**
      * @member {Buffer} - The SSRC field identifies
      * the synchronization source
      */
     this.ssrc = crypto.randomBytes(4).toString('hex');
+
+    this.socket = dgram.createSocket('udp4');
+    this.socket.bind(this.port);
   }
 
-  send(payload) {
-    const p = new RTPPacket(payload, this.sequenceNumber++, this.ssrc);
-    console.log(p.serialize());
+  send(payload, address) {
+    const packet = new RTPPacket(payload, this.sequenceNumber++, this.ssrc);
+
+    const promise = new Promise((resolve, reject) => {
+      this.socket.send(packet.serialize(), this.port, address, (err) => {
+        if (err) {
+          return reject(err);
+        }
+        return resolve();
+      });
+    });
+
+    return promise;
+  }
+
+  close() {
+    this.socket.close();
   }
 }
 
