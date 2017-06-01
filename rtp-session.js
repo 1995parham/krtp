@@ -23,12 +23,12 @@ class RTPSession {
     /** @member {number} */
     this.port = port;
     /** @member {number} */
-    this.squenceNumber = crypto.randomBytes(2).readInt16BE();
+    this.sequenceNumber = crypto.randomBytes(2).readUInt16BE();
     /**
      * @member {Buffer} - The SSRC field identifies
      * the synchronization source
      */
-    this.ssrc = crypto.randomBytes(4);
+    this.ssrc = crypto.randomBytes(4).toString('hex');
   }
 }
 
