@@ -17,11 +17,17 @@ const crypto = require('crypto');
 class RTPSession {
   /**
    * Creates a RTP session
+   * @param {number} port - RTP port
    */
-  constructor() {
-    /** @member {int} */
+  constructor(port) {
+    /** @member {number} */
+    this.port = port;
+    /** @member {number} */
     this.squenceNumber = crypto.randomBytes(2).readInt16BE();
-    /** @member {buffer} */
+    /**
+     * @member {Buffer} - The SSRC field identifies
+     * the synchronization source
+     */
     this.ssrc = crypto.randomBytes(4);
   }
 }
