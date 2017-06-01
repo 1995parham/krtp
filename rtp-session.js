@@ -8,9 +8,9 @@
  * +===============================================
  */
 const crypto = require('crypto');
-const RTPPacket = require('./rtp-packet');
 const dgram = require('dgram');
 
+const RTPPacket = require('./rtp-packet');
 
 /**
  * RTP session: An association among a set of participants
