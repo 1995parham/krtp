@@ -4,10 +4,11 @@
  * |
  * | Creation Date: 01-06-2017
  * |
- * | File Name:     rtp-seesion.js
+ * | File Name:     rtp-session.js
  * +===============================================
  */
 const crypto = require('crypto');
+const RTPPacket = require('./rtp-packet');
 
 
 /**
@@ -29,6 +30,11 @@ class RTPSession {
      * the synchronization source
      */
     this.ssrc = crypto.randomBytes(4).toString('hex');
+  }
+
+  send(payload) {
+    const p = new RTPPacket(payload, this.sequenceNumber++, this.ssrc);
+    console.log(p.serialize());
   }
 }
 
