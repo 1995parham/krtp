@@ -1,9 +1,9 @@
 {
-  "name": "krdp",
+  "name": "krtp",
   "version": "1.0.0",
   "description": "Node.js implementation of rdp protocol. RFC 3550",
   "main": "index.js",
-  "repository": "https://github.com/1995parham/krdp.git",
+  "repository": "https://github.com/1995parham/krtp.git",
   "author": "Parham Alvani <parham.alvani@gmail.com>",
   "license": "GPL-3.0",
   "devDependencies": {
