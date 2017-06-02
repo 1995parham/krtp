@@ -7,11 +7,7 @@
  * | File Name:     index.js
  * +===============================================
  */
-
-const RTPSession = require('./rtp-session');
-
-const s = new RTPSession(1373);
-s.send(Buffer.from('hello world'), '192.168.73.100').then(() => {
-  console.log('message send');
-  s.close();
-});
+module.exports = {
+  RTPSession: require('./rtp/session'),
+  RTPPacket: require('./rtp/packet')
+};
