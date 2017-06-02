@@ -3,6 +3,7 @@
 # KRTP
 
 - [Introduction](#introduction)
+- [Example](#example)
 - [Protocol Documentation](https://github.com/1995parham/krtp/blob/master/docs/RTP.md)
 
 ## Introduction
