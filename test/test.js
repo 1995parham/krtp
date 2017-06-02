@@ -19,6 +19,8 @@ describe('RTPSession', () => {
     const s = new RTPSession(1373);
     s.on('message', (msg) => {
       assert.equal(s.sequenceNumber, msg.sequenceNumber + 1);
+      assert.equal(s.ssrc, msg.ssrc);
+      assert.equal('Hello world', msg.payload.toString());
       s.close();
       done();
     });
