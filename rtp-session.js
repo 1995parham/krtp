@@ -35,9 +35,13 @@ class RTPSession extends EventEmitter {
      * @member {Buffer} - The SSRC field identifies
      * the synchronization source
      */
-    this.ssrc = crypto.randomBytes(4).toString('hex');
+    this.ssrc = crypto.randomBytes(4).readUInt32BE();
 
     this.socket = dgram.createSocket('udp4');
+    this.socket.on('message', (msg, rinfo) => {
+      const packet = RTPPacket.deserialize(msg);
+      this.emit('message', packet, rinfo);
+    });
     this.socket.bind(this.port);
   }
 
