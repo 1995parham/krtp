@@ -6,9 +6,13 @@
   "repository": "https://github.com/1995parham/krtp.git",
   "author": "Parham Alvani <parham.alvani@gmail.com>",
   "license": "GPL-3.0",
+  "scripts": {
+    "test": "mocha"
+  },
   "devDependencies": {
     "eslint": "^3.19.0",
     "eslint-config-node": "^1.6.0",
-    "jsdoc": "^3.4.3"
+    "jsdoc": "^3.4.3",
+    "mocha": "^3.4.2"
   }
 }
