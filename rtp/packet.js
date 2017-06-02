@@ -4,7 +4,7 @@
  * |
  * | Creation Date: 01-06-2017
  * |
- * | File Name:     rtp-packet.js
+ * | File Name:     packet.js
  * +===============================================
  */
 

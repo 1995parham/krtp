@@ -4,14 +4,14 @@
  * |
  * | Creation Date: 01-06-2017
  * |
- * | File Name:     rtp-session.js
+ * | File Name:     session.js
  * +===============================================
  */
 const crypto = require('crypto');
 const dgram = require('dgram');
 const EventEmitter = require('events').EventEmitter;
 
-const RTPPacket = require('./rtp-packet');
+const RTPPacket = require('./packet');
 
 /**
  * RTP session: An association among a set of participants
