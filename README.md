@@ -3,7 +3,7 @@
 RealTime Protocol implementation based on [RFC 3550](https://tools.ietf.org/html/rfc3550) in NodeJS.
 
 ## RealTime Protocol
-### Packet Foramt
+### Packet Format
 #### RealTime Control Protocol (RTCP)
 
 <table border="1">
