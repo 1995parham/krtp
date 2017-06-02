@@ -15,6 +15,7 @@ class RTPPacket {
    * @param {number} sequenceNumber
    * @param {number} timestamp
    * @param {number} payloadType
+   * @param {number} ssrc
    */
   constructor(payload, sequenceNumber, ssrc, timestamp = 0, payloadType = 95) {
     this.payload = payload;
@@ -44,11 +45,11 @@ class RTPPacket {
     /* buff[4, 5, 6, 7] = TS */
     buff.writeUInt32BE(this.timestamp, 4);
     /* buff[8, 9, 10, 11] = SSRC */
-    buff.write(this.ssrc, 8, 4);
+    buff.writeUInt32BE(this.ssrc, 8);
 
     /* CSRC section */
     for (let i = 0; i < this.csrc.length; i++) {
-      buff.write(this.csrc[i], 12 + i * 4, 4);
+      buff.writeUInt32BE(this.csrc[i], 12 + i * 4);
     }
 
     this.payload.copy(buff, 12 + this.csrc.length * 4, 0);
@@ -60,22 +61,22 @@ class RTPPacket {
     const csrc = [];
 
     /* buff[0] = (V << 6 | P << 5 | X << 4 | CC) */
-    if (buff[0] && 0xC0 != 2) {
+    if (buff[0] & 0xC0 >> 6 !== 2) {
       return null;
     }
-    const cc = buff[0] && 0x1F;
+    const cc = buff[0] & 0x1F;
     /* buff[1] = (M << 7 | PT) */
-    const payloadType = (buff[1] && 0x8F);
+    const payloadType = (buff[1] & 0x7F);
     /* buff[2, 3] = SN */
     const sequenceNumber = buff.readUInt16BE(2);
     /* buff[4, 5, 6, 7] = TS */
     const timestamp = buff.readUInt32BE(4);
     /* buff[8, 9, 10, 11] = SSRC */
-    const ssrc = buff.slice(8, 12).toString();
+    const ssrc = buff.readUInt32BE(8);
 
     /* CSRC section */
     for (let i = 0; i < cc; i++) {
-      csrc.append(buff.slice(12 + i * 4, 12 + i * 4 + 4).toString());
+      csrc.append(buff.readUInt32BE(12 + i * 4));
     }
 
 
