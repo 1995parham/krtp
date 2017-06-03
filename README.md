@@ -1,5 +1,6 @@
 [![NPM](https://nodei.co/npm/krtp.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/krtp/)
-[![Build Status](https://travis-ci.org/1995parham/krtp.svg?branch=master)](https://travis-ci.org/1995parham/krtp)
+
+[![Travis](https://travis-ci.org/1995parham/krtp.svg?branch=master&style=flat-square)](https://travis-ci.org/1995parham/krtp)
 
 # KRTP
 
