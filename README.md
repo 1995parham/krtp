@@ -2,6 +2,7 @@
 
 [![Travis branch](https://img.shields.io/travis/1995parham/krtp/master.svg?style=flat-square)](https://travis-ci.org/1995parham/krtp)
 [![GitHub stars](https://img.shields.io/github/stars/1995parham/krtp.svg?style=flat-square)](https://github.com/1995parham/krtp/stargazers)
+[![npm](https://img.shields.io/npm/v/krtp.svg?style=flat-square)]()
 
 # KRTP
 
