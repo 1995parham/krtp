@@ -21,8 +21,9 @@ class RTPSession extends EventEmitter {
   /**
    * Creates a RTP session
    * @param {number} port - RTP port
+   * @param {number} packetType - RTP packet type
    */
-  constructor(port) {
+  constructor(port, packetType) {
     super();
 
     /** @member {number} */
@@ -31,12 +32,18 @@ class RTPSession extends EventEmitter {
     /** @member {number} */
     this.sequenceNumber = crypto.randomBytes(2).readUInt16BE();
 
+    /** @member {number} */
+    this.packetType = packetType;
+
     /**
      * @member {Buffer} - The SSRC field identifies
      * the synchronization source
      */
     this.ssrc = crypto.randomBytes(4).readUInt32BE();
 
+    /**
+     * @member {dgram.Socket} - socket for data communication in session
+     */
     this.socket = dgram.createSocket('udp4');
     this.socket.on('message', (msg, rinfo) => {
       const packet = RTPPacket.deserialize(msg);
@@ -45,8 +52,9 @@ class RTPSession extends EventEmitter {
     this.socket.bind(this.port);
   }
 
-  send(payload, address) {
-    const packet = new RTPPacket(payload, this.sequenceNumber++, this.ssrc);
+  send(payload, address, timestamp = 0) {
+    const packet = new RTPPacket(payload, this.sequenceNumber++,
+      this.ssrc, timestamp);
 
     const promise = new Promise((resolve, reject) => {
       this.socket.send(packet.serialize(), this.port, address, (err) => {
