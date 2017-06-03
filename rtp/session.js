@@ -41,6 +41,12 @@ class RTPSession extends EventEmitter {
      */
     this.ssrc = crypto.randomBytes(4).readUInt32BE();
 
+    /** @member {number} - The total number of RTP data packets */
+    this.packetCount = 0;
+
+    /** @member {number} - The total number of payload octets */
+    this.octetCount = 0;
+
     /**
      * @member {dgram.Socket} - socket for data communication in session
      */
@@ -53,7 +59,7 @@ class RTPSession extends EventEmitter {
   }
 
   send(payload, address, timestamp = 0) {
-    const packet = new RTPPacket(payload, this.sequenceNumber++,
+    const packet = new RTPPacket(payload, this.sequenceNumber,
       this.ssrc, timestamp);
 
     const promise = new Promise((resolve, reject) => {
@@ -61,6 +67,9 @@ class RTPSession extends EventEmitter {
         if (err) {
           return reject(err);
         }
+        this.sequenceNumber = (this.sequenceNumber + 1) % (1 << 16);
+        this.packetCount++;
+        this.octetCount += payload.length;
         return resolve();
       });
     });
