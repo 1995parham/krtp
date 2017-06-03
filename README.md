@@ -1,6 +1,7 @@
 [![NPM](https://nodei.co/npm/krtp.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/krtp/)
 
-[![Travis](https://travis-ci.org/1995parham/krtp.svg?branch=master&style=flat-square)](https://travis-ci.org/1995parham/krtp)
+[![Travis branch](https://img.shields.io/travis/1995parham/krtp/master.svg?style=flat-square)](https://travis-ci.org/1995parham/krtp)
+[![GitHub stars](https://img.shields.io/github/stars/1995parham/krtp.svg?style=flat-square)](https://github.com/1995parham/krtp/stargazers)
 
 # KRTP
 
