@@ -1,11 +1,10 @@
-[![NPM](https://nodei.co/npm/krtp.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/krtp/)
+# KRTP
 
 [![Travis branch](https://img.shields.io/travis/1995parham/krtp/master.svg?style=flat-square)](https://travis-ci.org/1995parham/krtp)
 [![GitHub stars](https://img.shields.io/github/stars/1995parham/krtp.svg?style=flat-square)](https://github.com/1995parham/krtp/stargazers)
 [![npm version](https://img.shields.io/npm/v/krtp.svg?style=flat-square)]()
 [![npm license](https://img.shields.io/npm/l/krtp.svg?style=flat-square)]()
-
-# KRTP
+[![npm](https://img.shields.io/npm/dw/krtp.svg?style=flat-square)]()
 
 - [Introduction](#introduction)
 - [Example](#example)
