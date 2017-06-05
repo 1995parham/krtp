@@ -69,9 +69,16 @@ class RTPSession extends EventEmitter {
     this.controlSocket.bind(this.port + 1);
   }
 
-  sendSR(address) {
+  sendSR(address, timestamp) {
+    let ts = 0;
+    if (timestamp) {
+      ts = timestamp;
+    } else {
+      ts = (Date.now() / 1000 | 0) - this.timestamp;
+    }
+
     const packet = new RTPControlSR(this.packetCount, this.octetCount,
-      this.ssrc, (Date.now() / 1000 | 0) - this.timestamp);
+      this.ssrc, ts);
 
 
     const promise = new Promise((resolve, reject) => {
@@ -87,9 +94,16 @@ class RTPSession extends EventEmitter {
     return promise;
   }
 
-  send(payload, address) {
+  send(payload, address, timestamp) {
+    let ts = 0;
+    if (timestamp) {
+      ts = timestamp;
+    } else {
+      ts = (Date.now() / 1000 | 0) - this.timestamp;
+    }
+
     const packet = new RTPPacket(payload, this.sequenceNumber,
-      this.ssrc, (Date.now() / 1000 | 0) - this.timestamp);
+      this.ssrc, ts);
 
     const promise = new Promise((resolve, reject) => {
       this.socket.send(packet.serialize(), this.port, address, (err) => {
