@@ -14,6 +14,7 @@
 RealTime Protocol implementation based on [RFC 3550](https://tools.ietf.org/html/rfc3550) in NodeJS.
 
 ## Example
+
 ```javascript
 const RTPSession = require('krtp').RTPSession;
 
@@ -24,5 +25,5 @@ s.on('message', (msg) => {
   s.close();
 });
 
-s.send(Buffer.from('Hello world'));
+s.send(Buffer.from('Hello world'), '192.168.1.1');
 ```
