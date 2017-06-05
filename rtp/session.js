@@ -27,6 +27,9 @@ class RTPSession extends EventEmitter {
     super();
 
     /** @member {number} */
+    this.timestamp = Date.now() / 1000 | 0;
+
+    /** @member {number} */
     this.port = port;
 
     /** @member {number} */
@@ -58,9 +61,9 @@ class RTPSession extends EventEmitter {
     this.socket.bind(this.port);
   }
 
-  send(payload, address, timestamp = 0) {
+  send(payload, address) {
     const packet = new RTPPacket(payload, this.sequenceNumber,
-      this.ssrc, timestamp);
+      this.ssrc, (Date.now() / 1000 | 0) - this.timestamp);
 
     const promise = new Promise((resolve, reject) => {
       this.socket.send(packet.serialize(), this.port, address, (err) => {
