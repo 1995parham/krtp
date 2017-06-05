@@ -13,6 +13,8 @@ const EventEmitter = require('events').EventEmitter;
 
 const RTPPacket = require('./packet');
 
+const RTPControlSR = require('./control').RTPControlSR;
+
 /**
  * RTP session: An association among a set of participants
  * communicating with RTP.
@@ -59,6 +61,30 @@ class RTPSession extends EventEmitter {
       this.emit('message', packet, rinfo);
     });
     this.socket.bind(this.port);
+
+    /**
+     * @member {dgram.Socket} - socket for control communication in session
+     */
+    this.controlSocket = dgram.createSocket('udp4');
+    this.controlSocket.bind(this.port + 1);
+  }
+
+  sendSR(address) {
+    const packet = new RTPControlSR(this.packetCount, this.octetCount,
+      this.ssrc, (Date.now() / 1000 | 0) - this.timestamp);
+
+
+    const promise = new Promise((resolve, reject) => {
+      this.controlSocket.send(packet.serialize(), this.port + 1,
+        address, (err) => {
+        if (err) {
+          return reject(err);
+        }
+        return resolve();
+      });
+    });
+
+    return promise;
   }
 
   send(payload, address) {
@@ -82,6 +108,7 @@ class RTPSession extends EventEmitter {
 
   close() {
     this.socket.close();
+    this.controlSocket.close();
   }
 }
 
