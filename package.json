@@ -7,7 +7,11 @@
   "author": "Parham Alvani <parham.alvani@gmail.com>",
   "license": "GPL-3.0",
   "keywords": [
-    "rtp", "rtcp", "rtp-session", "rtp-packet", "rfc-3550"
+    "rtp",
+    "rtcp",
+    "rtp-session",
+    "rtp-packet",
+    "rfc-3550"
   ],
   "scripts": {
     "test": "mocha"
