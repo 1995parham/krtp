@@ -41,7 +41,10 @@ class RTPSession extends events.EventEmitter {
      */
     this.sequenceNumber = crypto.randomBytes(2).readUInt16BE();
 
-    /** @member {number} */
+    /**
+     * @member {number} - This field identifies the format of the RTP
+     * payload and determines its interpretation by the application.
+     */
     this.packetType = packetType;
 
     /**
