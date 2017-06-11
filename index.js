@@ -7,7 +7,12 @@
  * | File Name:     index.js
  * +===============================================
  */
+const RTPWriteStream = require('./rtp/streams');
+
 module.exports = {
   RTPSession: require('./rtp/session'),
-  RTPPacket: require('./rtp/packet')
+  RTPPacket: require('./rtp/packet'),
+  createWriteStream() {
+    return new RTPWriteStream();
+  }
 };
