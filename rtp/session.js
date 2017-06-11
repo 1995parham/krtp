@@ -9,7 +9,7 @@
  */
 const crypto = require('crypto');
 const dgram = require('dgram');
-const EventEmitter = require('events').EventEmitter;
+const events = require('events');
 
 const RTPPacket = require('./packet');
 
@@ -19,7 +19,7 @@ const RTPControlSR = require('./control').RTPControlSR;
  * RTP session: An association among a set of participants
  * communicating with RTP.
  */
-class RTPSession extends EventEmitter {
+class RTPSession extends events.EventEmitter {
   /**
    * Creates a RTP session
    * @param {number} port - RTP port
