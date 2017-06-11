@@ -34,7 +34,11 @@ class RTPSession extends events.EventEmitter {
     /** @member {number} */
     this.port = port;
 
-    /** @member {number} */
+    /**
+     * @member {number} - The sequence number increments by one for each
+     * RTP data packet sent, and may be used by the receiver to detect
+     * packet loss and to restore packet sequence.
+     */
     this.sequenceNumber = crypto.randomBytes(2).readUInt16BE();
 
     /** @member {number} */
