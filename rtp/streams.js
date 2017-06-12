@@ -66,6 +66,7 @@ class RTPWriteStream extends stream.Writable {
       }
       this.sequenceNumber = (this.sequenceNumber + 1) % (1 << 16);
       this.timestamp += this.timediff;
+      callback();
     });
 
   }
