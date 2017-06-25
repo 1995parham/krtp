@@ -19,7 +19,7 @@ const RTPPacket = require('./packet');
  * RTP packets.
  */
 class RTPWriteStream extends stream.Writable {
-  constructor(timediff, port, address) {
+  constructor(timediff, port, address, bind) {
     super({
       objectMode: false
     });
@@ -53,7 +53,9 @@ class RTPWriteStream extends stream.Writable {
      * @member {dgram.Socket} - socket for data communication in session
      */
     this.socket = dgram.createSocket('udp4');
-    this.socket.bind(this.port);
+    if (bind) {
+      this.socket.bind(this.port);
+    }
   }
 
   _write(chunk, encoding, callback) {
