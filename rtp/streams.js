@@ -19,7 +19,7 @@ const RTPPacket = require('./packet');
  * RTP packets.
  */
 class RTPWriteStream extends stream.Writable {
-  constructor(address, port, timediff) {
+  constructor(timediff, port, address) {
     super({
       objectMode: false
     });
