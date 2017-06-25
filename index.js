@@ -12,7 +12,7 @@ const RTPWriteStream = require('./rtp/streams').RTPWriteStream;
 module.exports = {
   RTPSession: require('./rtp/session'),
   RTPPacket: require('./rtp/packet'),
-  createWriteStream(timediff, port, address) {
-    return new RTPWriteStream(timediff, port, address);
+  createWriteStream(timediff, port, address, bind) {
+    return new RTPWriteStream(timediff, port, address, bind);
   }
 };
