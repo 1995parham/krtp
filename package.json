@@ -18,7 +18,11 @@
   },
   "devDependencies": {
     "eslint": "^3.19.0",
-    "eslint-config-node": "^1.6.0",
+    "eslint-config-standard": "^10.2.1",
+    "eslint-plugin-import": "^2.6.0",
+    "eslint-plugin-node": "^5.1.0",
+    "eslint-plugin-promise": "^3.5.0",
+    "eslint-plugin-standard": "^3.0.1",
     "jsdoc": "^3.4.3",
     "mocha": "^3.4.2"
   }
