@@ -14,7 +14,7 @@
     "rfc-3550"
   ],
   "scripts": {
-    "test": "mocha"
+    "test": "eslint --color **/*.js; mocha"
   },
   "devDependencies": {
     "eslint": "^3.19.0",
