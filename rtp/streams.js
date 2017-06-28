@@ -8,77 +8,76 @@
  * +===============================================
  */
 
-const stream = require('stream');
-const dgram = require('dgram');
-const crypto = require('crypto');
+const stream = require('stream')
+const dgram = require('dgram')
+const crypto = require('crypto')
 
-const RTPPacket = require('./packet');
+const RTPPacket = require('./packet')
 
 /**
  * RTP write stream: write stream of data as a sequence of
  * RTP packets.
  */
 class RTPWriteStream extends stream.Writable {
-  constructor(timediff, port, address, bind) {
+  constructor (timediff, port, address, bind) {
     super({
       objectMode: false
-    });
+    })
 
     /** @member {String} */
-    this.address = address;
+    this.address = address
 
     /** @member {number} */
-    this.port = port;
+    this.port = port
 
     /** @member {number} */
-    this.timestamp = 0;
+    this.timestamp = 0
 
     /** @member {number} */
-    this.timediff = timediff;
+    this.timediff = timediff
 
     /**
      * @member {number} - The sequence number increments by one for each
      * RTP data packet sent, and may be used by the receiver to detect
      * packet loss and to restore packet sequence.
      */
-    this.sequenceNumber = crypto.randomBytes(2).readUInt16BE();
+    this.sequenceNumber = crypto.randomBytes(2).readUInt16BE()
 
     /**
      * @member {Buffer} - The SSRC field identifies
      * the synchronization source
      */
-    this.ssrc = crypto.randomBytes(4).readUInt32BE();
+    this.ssrc = crypto.randomBytes(4).readUInt32BE()
 
     /**
      * @member {dgram.Socket} - socket for data communication in session
      */
-    this.socket = dgram.createSocket('udp4');
+    this.socket = dgram.createSocket('udp4')
     if (bind) {
-      this.socket.bind(this.port);
+      this.socket.bind(this.port)
     }
   }
 
-  _write(chunk, encoding, callback) {
+  _write (chunk, encoding, callback) {
     const packet = new RTPPacket(chunk, this.sequenceNumber,
-      this.ssrc, this.timestamp);
+      this.ssrc, this.timestamp)
 
     this.socket.send(packet.serialize(), this.port, this.address, (err) => {
       if (err) {
-        return callback(err);
+        return callback(err)
       }
-      this.sequenceNumber = (this.sequenceNumber + 1) % (1 << 16);
-      this.timestamp += this.timediff;
-      callback();
-    });
-
+      this.sequenceNumber = (this.sequenceNumber + 1) % (1 << 16)
+      this.timestamp += this.timediff
+      callback()
+    })
   }
 
-  _final(callback) {
-    this.socket.close();
-    callback();
+  _final (callback) {
+    this.socket.close()
+    callback()
   }
 }
 
 module.exports = {
   RTPWriteStream
-};
+}
