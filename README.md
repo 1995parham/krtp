@@ -5,6 +5,7 @@
 [![npm version](https://img.shields.io/npm/v/krtp.svg?style=flat-square)](https://www.npmjs.com/package/krtp)
 [![npm license](https://img.shields.io/npm/l/krtp.svg?style=flat-square)]()
 [![npm](https://img.shields.io/npm/dw/krtp.svg?style=flat-square)]()
+[![js-standard-style](https://cdn.rawgit.com/feross/standard/master/badge.svg)](http://standardjs.com)
 
 - [Introduction](#introduction)
 - [Example](#example)
