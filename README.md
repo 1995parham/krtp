@@ -5,7 +5,7 @@
 [![npm version](https://img.shields.io/npm/v/krtp.svg?style=flat-square)](https://www.npmjs.com/package/krtp)
 [![npm license](https://img.shields.io/npm/l/krtp.svg?style=flat-square)]()
 [![npm](https://img.shields.io/npm/dw/krtp.svg?style=flat-square)]()
-[![Codacy grade](https://img.shields.io/codacy/grade/8073505d59d241b6beeda1451a3bcf5e.svg?style=flat-square)](https://www.codacy.com/app/1995parham/krtp?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=1995parham/krtp&amp;utm_campaign=Badge_Grade)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/8073505d59d241b6beeda1451a3bcf5e)](https://www.codacy.com/app/1995parham/krtp?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=1995parham/krtp&amp;utm_campaign=Badge_Grade)
 [![js-standard-style](https://cdn.rawgit.com/feross/standard/master/badge.svg)](http://standardjs.com)
 
 - [Introduction](#introduction)
