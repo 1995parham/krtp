@@ -6,5 +6,7 @@
     ],
     "rulesDirectory": ["node_modules/tslint-microsoft-contrib"],
     "jsRules": {},
-    "rules": {}
+    "rules": {
+      "no-bitwise": false
+    }
 }
