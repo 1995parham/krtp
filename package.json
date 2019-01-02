@@ -24,7 +24,8 @@
   "scripts": {
     "prepublish": "npm run build",
     "build": "tsc",
-    "test": "tslint -c tslint.json -p tsconfig.json 'lib/**/*.ts' && jest --coverage"
+    "test": "jest --coverage",
+    "lint": "tslint -c tslint.json -p tsconfig.json 'lib/**/*.ts'"
   },
   "devDependencies": {
     "@types/jest": "^23.3.10",
