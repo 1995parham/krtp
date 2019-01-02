@@ -14,7 +14,7 @@ import EventEmitter from 'events';
 import { Packet } from './Packet';
 import { RTPControlSR } from './Control';
 
-export declare interface RTPSession {
+export declare interface Session {
     on(event: 'message', listener: (msg: Packet, rinfo: any) => void): this;
     on(event: string, listener: Function): this;
 }
@@ -23,7 +23,7 @@ export declare interface RTPSession {
  * RTP session: An association among a set of participants
  * communicating with RTP.
  */
-export class RTPSession extends EventEmitter {
+export class Session extends EventEmitter {
   private timestamp: number;
 
   /*
