@@ -12,8 +12,7 @@ import * as dgram from 'dgram';
 import EventEmitter from 'events';
 
 import { RTPPacket } from './Packet';
-
-const RTPControlSR = require('./control').RTPControlSR
+import { RTPControlSR } from './Control';
 
 /**
  * RTP session: An association among a set of participants
