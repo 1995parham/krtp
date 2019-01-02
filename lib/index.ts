@@ -3,3 +3,4 @@
  */
 export * from './Packet';
 export * from './Session';
+export * from './Control';
