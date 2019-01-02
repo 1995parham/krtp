@@ -1,11 +1,19 @@
 {
   "name": "krtp",
-  "version": "2.0.1",
-  "description": "Node.js implementation of rdp protocol. RFC 3550",
-  "main": "index.js",
-  "repository": "https://github.com/1995parham/krtp.git",
+  "version": "3.0.0",
+  "description": "Node implementation of rdp protocol. RFC 3550",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/1995parham/krtp"
+  },
   "author": "Parham Alvani <parham.alvani@gmail.com>",
   "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/1995parham/krtp/issues"
+  },
+  "homepage": "https://github.com/1995parham/krtp#readme",
   "keywords": [
     "rtp",
     "rtcp",
@@ -14,16 +22,17 @@
     "rfc-3550"
   ],
   "scripts": {
-    "test": "eslint --color **/*.js; mocha"
+    "prepublish": "npm run build",
+    "build": "tsc",
+    "test": "tslint -c tslint.json -p tsconfig.json 'lib/**/*.ts' && jest --coverage"
   },
   "devDependencies": {
-    "eslint": "^3.19.0",
-    "eslint-config-standard": "^10.2.1",
-    "eslint-plugin-import": "^2.6.0",
-    "eslint-plugin-node": "^5.1.0",
-    "eslint-plugin-promise": "^3.5.0",
-    "eslint-plugin-standard": "^3.0.1",
-    "jsdoc": "^3.4.3",
-    "mocha": "^3.4.2"
+    "@types/jest": "^23.3.10",
+    "@types/node": "^10.12.11",
+    "jest": "^23.6.0",
+    "ts-jest": "^23.10.5",
+    "tslint": "^5.11.0",
+    "tslint-microsoft-contrib": "^5.2.1",
+    "typescript": "^3.2.1"
   }
 }
