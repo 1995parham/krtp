@@ -12,7 +12,7 @@ import * as dgram from 'dgram';
 import EventEmitter from 'events';
 
 import { Packet } from './Packet';
-import { RTPControlSR } from './Control';
+import { ControlSR } from './Control';
 
 export declare interface Session {
     on(event: 'message', listener: (msg: Packet, rinfo: any) => void): this;
@@ -96,8 +96,7 @@ export class Session extends EventEmitter {
 
   public sendSR (address: string = '127.0.0.1', timestamp: number = (Date.now() / 1000 | 0) - this.timestamp): Promise<void> {
 
-    const packet = new RTPControlSR(this.packetCount, this.octetCount,
-      this.ssrc, timestamp);
+    const packet = new ControlSR(this.packetCount, this.octetCount, this.ssrc, timestamp);
 
     return new Promise<void>((resolve, reject) => {
       this.controlSocket.send(packet.serialize(), this.port + 1,
@@ -113,8 +112,7 @@ export class Session extends EventEmitter {
 
   public send (payload: Buffer, address: string = '127.0.0.1', timestamp: number = (Date.now() / 1000 | 0) - this.timestamp): Promise<void> {
 
-    const packet = new Packet(payload, this.sequenceNumber,
-      this.ssrc, timestamp, this.packetType);
+    const packet = new Packet(payload, this.sequenceNumber, this.ssrc, timestamp, this.packetType);
 
     return new Promise<void>((resolve, reject) => {
       this.socket.send(packet.serialize(), this.port, address, (err) => {
