@@ -11,11 +11,11 @@ import * as crypto from 'crypto';
 import * as dgram from 'dgram';
 import EventEmitter from 'events';
 
-import { RTPPacket } from './Packet';
+import { Packet } from './Packet';
 import { RTPControlSR } from './Control';
 
 export declare interface RTPSession {
-    on(event: 'message', listener: (msg: RTPPacket, rinfo: any) => void): this;
+    on(event: 'message', listener: (msg: Packet, rinfo: any) => void): this;
     on(event: string, listener: Function): this;
 }
 
@@ -85,7 +85,7 @@ export class RTPSession extends EventEmitter {
     this.socket = dgram.createSocket('udp4');
 
     this.socket.on('message', (msg, rinfo) => {
-      const packet = RTPPacket.deserialize(msg);
+      const packet = Packet.deserialize(msg);
       this.emit('message', packet, rinfo);
     })
     this.socket.bind(this.port);
@@ -113,7 +113,7 @@ export class RTPSession extends EventEmitter {
 
   public send (payload: Buffer, address: string = '127.0.0.1', timestamp: number = (Date.now() / 1000 | 0) - this.timestamp): Promise<void> {
 
-    const packet = new RTPPacket(payload, this.sequenceNumber,
+    const packet = new Packet(payload, this.sequenceNumber,
       this.ssrc, timestamp, this.packetType);
 
     return new Promise<void>((resolve, reject) => {
