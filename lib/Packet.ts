@@ -67,8 +67,8 @@ export class Packet {
     const csrc: Array<number> = [];
 
     /* buff[0] = (V << 6 | P << 5 | X << 4 | CC) */
-    if ((buff[0] & 0xC0 >> 6) !== 2) {
-      throw new Error('Invalid packet signature');
+    if ((buff[0] & 0xC0) >> 6 !== 2) {
+      throw new Error(`Invalid RTP packet ${buff[0] & 0xC0}`);
     }
     const cc = buff[0] & 0x1F;
     /* buff[1] = (M << 7 | PT) */
