@@ -1,1 +1,1 @@
-export { RTPSession } from './lib';
+export { Session } from './lib';
