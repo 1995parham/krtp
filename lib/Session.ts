@@ -14,6 +14,11 @@ import EventEmitter from 'events';
 import { RTPPacket } from './Packet';
 import { RTPControlSR } from './Control';
 
+export declare interface RTPSession {
+    on(event: 'message', listener: (msg: RTPPacket, rinfo: any) => void): this;
+    on(event: string, listener: Function): this;
+}
+
 /**
  * RTP session: An association among a set of participants
  * communicating with RTP.
@@ -26,19 +31,28 @@ export class RTPSession extends EventEmitter {
    * RTP data packet sent, and may be used by the receiver to detect
    * packet loss and to restore packet sequence.
    */
-  private sequenceNumber: number;
+  private _sequenceNumber: number;
+  public get sequenceNumber(): number {
+    return this._sequenceNumber;
+  }
 
   /*
    * The SSRC field identifies
    * the synchronization source
    */
-  private ssrc: number;
+  readonly ssrc: number;
 
   /* The total number of RTP data packets */
-  private packetCount: number;
+  private _packetCount: number;
+  public get packetCount(): number {
+    return this._packetCount;
+  }
 
   /* The total number of payload octets */
-  private octetCount: number;
+  private _octetCount: number;
+  public get octetCount(): number {
+    return this._octetCount;
+  }
 
   /* socket for session's data communication */
   private socket: dgram.Socket;
@@ -54,19 +68,19 @@ export class RTPSession extends EventEmitter {
    */
   constructor (
     private port: number,
-    private packetType: number,
+    private packetType: number = 95,
   ) {
     super()
 
     this.timestamp = Date.now() / 1000 | 0;
 
-    this.sequenceNumber = crypto.randomBytes(2).readUInt16BE(0);
+    this._sequenceNumber = crypto.randomBytes(2).readUInt16BE(0);
 
     this.ssrc = crypto.randomBytes(4).readUInt32BE(0);
 
-    this.packetCount = 0;
+    this._packetCount = 0;
 
-    this.octetCount = 0;
+    this._octetCount = 0;
 
     this.socket = dgram.createSocket('udp4');
 
@@ -80,16 +94,10 @@ export class RTPSession extends EventEmitter {
     this.controlSocket.bind(this.port + 1);
   }
 
-  public sendSR (address: string, timestamp: number): Promise<void> {
-    let ts = 0;
-    if (timestamp) {
-      ts = timestamp;
-    } else {
-      ts = (Date.now() / 1000 | 0) - this.timestamp;
-    }
+  public sendSR (address: string = '127.0.0.1', timestamp: number = (Date.now() / 1000 | 0) - this.timestamp): Promise<void> {
 
     const packet = new RTPControlSR(this.packetCount, this.octetCount,
-      this.ssrc, ts);
+      this.ssrc, timestamp);
 
     return new Promise<void>((resolve, reject) => {
       this.controlSocket.send(packet.serialize(), this.port + 1,
@@ -103,25 +111,19 @@ export class RTPSession extends EventEmitter {
     })
   }
 
-  public send (payload: Buffer, address: string, timestamp: number): Promise<void> {
-    let ts = 0;
-    if (timestamp) {
-      ts = timestamp;
-    } else {
-      ts = (Date.now() / 1000 | 0) - this.timestamp;
-    }
+  public send (payload: Buffer, address: string = '127.0.0.1', timestamp: number = (Date.now() / 1000 | 0) - this.timestamp): Promise<void> {
 
     const packet = new RTPPacket(payload, this.sequenceNumber,
-      this.ssrc, ts, this.packetType);
+      this.ssrc, timestamp, this.packetType);
 
     return new Promise<void>((resolve, reject) => {
       this.socket.send(packet.serialize(), this.port, address, (err) => {
         if (err) {
           return reject(err);
         }
-        this.sequenceNumber = (this.sequenceNumber + 1) % (1 << 16);
-        this.packetCount++;
-        this.octetCount += payload.length;
+        this._sequenceNumber = (this._sequenceNumber + 1) % (1 << 16);
+        this._packetCount++;
+        this._octetCount += payload.length;
         return resolve();
       })
     });
