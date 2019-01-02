@@ -4,14 +4,14 @@
  * |
  * | Creation Date: 01-06-2017
  * |
- * | File Name:     session.js
+ * | File Name:     session.ts
  * +===============================================
  */
 import * as crypto from 'crypto';
 import * as dgram from 'dgram';
 import EventEmitter from 'events';
 
-const RTPPacket = require('./packet')
+import { RTPPacket } from './Packet';
 
 const RTPControlSR = require('./control').RTPControlSR
 
@@ -20,7 +20,7 @@ const RTPControlSR = require('./control').RTPControlSR
  * communicating with RTP.
  */
 export class RTPSession extends EventEmitter {
-  private timestamp: number
+  private timestamp: number;
 
   /*
    * The sequence number increments by one for each
@@ -65,32 +65,32 @@ export class RTPSession extends EventEmitter {
 
     this.ssrc = crypto.randomBytes(4).readUInt32BE(0);
 
-    this.packetCount = 0
+    this.packetCount = 0;
 
-    this.octetCount = 0
+    this.octetCount = 0;
 
-    this.socket = dgram.createSocket('udp4')
+    this.socket = dgram.createSocket('udp4');
 
     this.socket.on('message', (msg, rinfo) => {
-      const packet = RTPPacket.deserialize(msg)
-      this.emit('message', packet, rinfo)
+      const packet = RTPPacket.deserialize(msg);
+      this.emit('message', packet, rinfo);
     })
-    this.socket.bind(this.port)
+    this.socket.bind(this.port);
 
-    this.controlSocket = dgram.createSocket('udp4')
-    this.controlSocket.bind(this.port + 1)
+    this.controlSocket = dgram.createSocket('udp4');
+    this.controlSocket.bind(this.port + 1);
   }
 
   public sendSR (address: string, timestamp: number): Promise<void> {
-    let ts = 0
+    let ts = 0;
     if (timestamp) {
-      ts = timestamp
+      ts = timestamp;
     } else {
-      ts = (Date.now() / 1000 | 0) - this.timestamp
+      ts = (Date.now() / 1000 | 0) - this.timestamp;
     }
 
     const packet = new RTPControlSR(this.packetCount, this.octetCount,
-      this.ssrc, ts)
+      this.ssrc, ts);
 
     return new Promise<void>((resolve, reject) => {
       this.controlSocket.send(packet.serialize(), this.port + 1,
@@ -105,31 +105,31 @@ export class RTPSession extends EventEmitter {
   }
 
   public send (payload: Buffer, address: string, timestamp: number): Promise<void> {
-    let ts = 0
+    let ts = 0;
     if (timestamp) {
-      ts = timestamp
+      ts = timestamp;
     } else {
-      ts = (Date.now() / 1000 | 0) - this.timestamp
+      ts = (Date.now() / 1000 | 0) - this.timestamp;
     }
 
     const packet = new RTPPacket(payload, this.sequenceNumber,
-      this.ssrc, ts)
+      this.ssrc, ts, this.packetType);
 
     return new Promise<void>((resolve, reject) => {
       this.socket.send(packet.serialize(), this.port, address, (err) => {
         if (err) {
-          return reject(err)
+          return reject(err);
         }
-        this.sequenceNumber = (this.sequenceNumber + 1) % (1 << 16)
-        this.packetCount++
-        this.octetCount += payload.length
-        return resolve()
+        this.sequenceNumber = (this.sequenceNumber + 1) % (1 << 16);
+        this.packetCount++;
+        this.octetCount += payload.length;
+        return resolve();
       })
-    })
+    });
   }
 
   public close (): void {
-    this.socket.close()
-    this.controlSocket.close()
+    this.socket.close();
+    this.controlSocket.close();
   }
 }
