@@ -1,1 +1,1 @@
-export * from './lib';
+export { RTPSession } from './lib';
