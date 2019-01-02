@@ -13,11 +13,12 @@ export class RTPPacket {
   private csrc: Array<number> = []
 
   constructor (
-    private payload: Buffer,
-    private sequenceNumber: number,
-    private ssrc: number,
-    private timestamp: number = 0,
-    private payloadType: number = 95) {
+    readonly payload: Buffer,
+    readonly sequenceNumber: number,
+    readonly ssrc: number,
+    readonly timestamp: number = 0,
+    readonly payloadType: number = 95,
+  ) {
   }
 
   public addCSRC (csrc: number): void {
