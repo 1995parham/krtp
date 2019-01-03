@@ -32,12 +32,13 @@ describe('RTPSession', () => {
   })
 
   test('rxjs', done => {
-    const s = new Session(1372);
+    const s = new Session(1372, 72);
     const initialSequenceNumber = s.sequenceNumber;
 
     s.message$.pipe(
       filter(msg => msg.sequenceNumber === initialSequenceNumber + 9)
     ).subscribe((msg) => {
+      assert.equal(72, msg.payloadType);
       assert.equal('Hello world of rxjs - 10', msg.payload.toString());
       s.close();
       done();
