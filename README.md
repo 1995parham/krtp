@@ -36,6 +36,7 @@ s.send(Buffer.from('Hello world'))
 
 ```typescript
 import { Session } from '..';
+
 const s = new Session(1372);
 s.message$.subscribe((msg) => console.log(msg));
 ```
