@@ -10,6 +10,7 @@
 import { randomBytes } from 'crypto';
 import * as dgram from 'dgram';
 import { EventEmitter } from 'events';
+import { Observable, fromEvent } from 'rxjs';
 
 import { Packet } from './Packet';
 import { ControlSR } from './Control';
@@ -133,5 +134,9 @@ export class Session extends EventEmitter {
   public close (): void {
     this.socket.close();
     this.controlSocket.close();
+  }
+
+  public message (): Observable<Packet> {
+    return fromEvent(this, 'message');
   }
 }
