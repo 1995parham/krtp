@@ -9,14 +9,14 @@
  */
 import { randomBytes } from 'crypto';
 import * as dgram from 'dgram';
-import EventEmitter from 'events';
+import { EventEmitter } from 'events';
 
 import { Packet } from './Packet';
 import { ControlSR } from './Control';
 
 export declare interface Session {
-    on(event: 'message', listener: (msg: Packet, rinfo: any) => void): this;
-    on(event: string, listener: Function): this;
+  on(event: 'message', listener: (msg: Packet, rinfo: dgram.RemoteInfo) => void): this;
+  on(event: string, listener: Function): this;
 }
 
 /**
@@ -24,6 +24,24 @@ export declare interface Session {
  * communicating with RTP.
  */
 export class Session extends EventEmitter {
+  /*
+   * The SSRC field identifies
+   * the synchronization source
+   */
+  public readonly ssrc: number;
+
+  public get sequenceNumber(): number {
+    return this._sequenceNumber;
+  }
+
+  public get packetCount(): number {
+    return this._packetCount;
+  }
+
+  public get octetCount(): number {
+    return this._octetCount;
+  }
+
   private timestamp: number;
 
   /*
@@ -32,32 +50,17 @@ export class Session extends EventEmitter {
    * packet loss and to restore packet sequence.
    */
   private _sequenceNumber: number;
-  public get sequenceNumber(): number {
-    return this._sequenceNumber;
-  }
 
-  /*
-   * The SSRC field identifies
-   * the synchronization source
-   */
-  readonly ssrc: number;
-
-  /* The total number of RTP data packets */
+  // The total number of RTP data packets
   private _packetCount: number;
-  public get packetCount(): number {
-    return this._packetCount;
-  }
 
-  /* The total number of payload octets */
+  // The total number of payload octets
   private _octetCount: number;
-  public get octetCount(): number {
-    return this._octetCount;
-  }
 
-  /* socket for session's data communication */
+  // socket for session's data communication
   private socket: dgram.Socket;
 
-  /* socket for session's control communication */
+  // socket for session's control communication
   private controlSocket: dgram.Socket;
 
   /**
@@ -68,9 +71,9 @@ export class Session extends EventEmitter {
    */
   constructor (
     private port: number,
-    private packetType: number = 95,
+    private packetType: number = 95
   ) {
-    super()
+    super();
 
     this.timestamp = Date.now() / 1000 | 0;
 
@@ -84,17 +87,17 @@ export class Session extends EventEmitter {
 
     this.socket = dgram.createSocket('udp4');
 
-    this.socket.on('message', (msg, rinfo) => {
+    this.socket.on('message', (msg: Buffer, rinfo: dgram.RemoteInfo) => {
       const packet = Packet.deserialize(msg);
       this.emit('message', packet, rinfo);
-    })
+    });
     this.socket.bind(this.port);
 
     this.controlSocket = dgram.createSocket('udp4');
     this.controlSocket.bind(this.port + 1);
   }
 
-  public sendSR (address: string = '127.0.0.1', timestamp: number = (Date.now() / 1000 | 0) - this.timestamp): Promise<void> {
+  public async sendSR (address: string = '127.0.0.1', timestamp: number = (Date.now() / 1000 | 0) - this.timestamp): Promise<void> {
 
     const packet = new ControlSR(this.packetCount, this.octetCount, this.ssrc, timestamp);
 
@@ -106,11 +109,11 @@ export class Session extends EventEmitter {
           }
           return resolve();
         }
-      )
-    })
+      );
+    });
   }
 
-  public send (payload: Buffer, address: string = '127.0.0.1', timestamp: number = (Date.now() / 1000 | 0) - this.timestamp): Promise<void> {
+  public async send (payload: Buffer, address: string = '127.0.0.1', timestamp: number = (Date.now() / 1000 | 0) - this.timestamp): Promise<void> {
 
     const packet = new Packet(payload, this.sequenceNumber, this.ssrc, timestamp, this.packetType);
 
@@ -120,10 +123,10 @@ export class Session extends EventEmitter {
           return reject(err);
         }
         this._sequenceNumber = (this._sequenceNumber + 1) % (1 << 16);
-        this._packetCount++;
+        this._packetCount += 1;
         this._octetCount += payload.length;
         return resolve();
-      })
+      });
     });
   }
 
