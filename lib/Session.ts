@@ -7,7 +7,7 @@
  * | File Name:     session.ts
  * +===============================================
  */
-import * as crypto from 'crypto';
+import { randomBytes } from 'crypto';
 import * as dgram from 'dgram';
 import EventEmitter from 'events';
 
@@ -74,9 +74,9 @@ export class Session extends EventEmitter {
 
     this.timestamp = Date.now() / 1000 | 0;
 
-    this._sequenceNumber = crypto.randomBytes(2).readUInt16BE(0);
+    this._sequenceNumber = randomBytes(2).readUInt16BE(0);
 
-    this.ssrc = crypto.randomBytes(4).readUInt32BE(0);
+    this.ssrc = randomBytes(4).readUInt32BE(0);
 
     this._packetCount = 0;
 
