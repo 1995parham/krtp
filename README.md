@@ -13,6 +13,8 @@
 
 ## Introduction
 RealTime Protocol implementation based on [RFC 3550](https://tools.ietf.org/html/rfc3550) in NodeJS.
+It supports RTP and SR message of RTCP. All contributions are welcome.
+KRTP has support for rxjs.
 
 ## Example
 
@@ -30,4 +32,11 @@ s.sendSR('192.168.73.4').catch(err => {
   console.log(err)
 })
 s.send(Buffer.from('Hello world'))
+```
+
+```typescript
+import { Session } from '..';
+
+const s = new Session(1372);
+s.message$.subscribe((msg) => console.log(msg));
 ```
