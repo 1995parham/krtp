@@ -89,7 +89,7 @@ export class Session extends EventEmitter {
     this.socket = dgram.createSocket('udp4');
 
     this.socket.on('message', (msg: Buffer, rinfo: dgram.RemoteInfo) => {
-      const packet = Packet.deserialize(msg);
+      const packet: Packet = Packet.deserialize(msg);
       this.emit('message', packet, rinfo);
     });
     this.socket.bind(this.port);
@@ -100,7 +100,7 @@ export class Session extends EventEmitter {
 
   public async sendSR (address: string = '127.0.0.1', timestamp: number = (Date.now() / 1000 | 0) - this.timestamp): Promise<void> {
 
-    const packet = new ControlSR(this.packetCount, this.octetCount, this.ssrc, timestamp);
+    const packet = new ControlSR(this._packetCount, this._octetCount, this.ssrc, timestamp);
 
     return new Promise<void>((resolve, reject) => {
       this.controlSocket.send(packet.serialize(), this.port + 1,
@@ -116,16 +116,16 @@ export class Session extends EventEmitter {
 
   public async send (payload: Buffer, address: string = '127.0.0.1', timestamp: number = (Date.now() / 1000 | 0) - this.timestamp): Promise<void> {
 
-    const packet = new Packet(payload, this.sequenceNumber, this.ssrc, timestamp, this.packetType);
+    const packet = new Packet(payload, this._sequenceNumber, this.ssrc, timestamp, this.packetType);
+    this._sequenceNumber = (this._sequenceNumber + 1) % (1 << 16);
+    this._packetCount += 1;
+    this._octetCount += payload.length;
 
     return new Promise<void>((resolve, reject) => {
       this.socket.send(packet.serialize(), this.port, address, (err) => {
         if (err) {
           return reject(err);
         }
-        this._sequenceNumber = (this._sequenceNumber + 1) % (1 << 16);
-        this._packetCount += 1;
-        this._octetCount += payload.length;
         return resolve();
       });
     });
@@ -136,7 +136,7 @@ export class Session extends EventEmitter {
     this.controlSocket.close();
   }
 
-  public message (): Observable<Packet> {
-    return fromEvent(this, 'message');
+  public get message$ (): Observable<Packet> {
+    return fromEvent(this, 'message', (msg) => msg);
   }
 }
