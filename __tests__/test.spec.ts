@@ -16,6 +16,7 @@ import { filter } from 'rxjs/operators';
 import { Session } from '..';
 
 describe('RTPSession', () => {
+
   test('packet send-recieve serialize-deserialize', done => {
     const s = new Session(1373);
     s.on('message', (msg) => {
@@ -38,6 +39,7 @@ describe('RTPSession', () => {
       filter(msg => msg.sequenceNumber === initialSequenceNumber + 9)
     ).subscribe((msg) => {
       assert.equal('Hello world of rxjs - 10', msg.payload.toString());
+      s.close();
       done();
     });
 
@@ -47,4 +49,5 @@ describe('RTPSession', () => {
       })
     });
   })
+
 })
