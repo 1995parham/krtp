@@ -11,12 +11,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: publish if version has been updated
-        uses: pascalgn/npm-publish-action@1.3.8
+        uses: JS-DevTools/npm-publish@v1
         with:
-          tag_name: "v%s"
-          tag_message: "v%s"
-          create_tag: "true"
-          publish_command: "npm publish"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
+          token: ${{ secrets.NPM_AUTH_TOKEN }}
+      - if: steps.publish.outputs.type != 'none'
+        run: |
+          echo "Version changed: ${{ steps.publish.outputs.old-version }} => ${{ steps.publish.outputs.version }}"
