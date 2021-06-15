@@ -25,15 +25,20 @@
     "prepublish": "npm run build",
     "build": "tsc",
     "test": "jest --coverage",
-    "lint": "tslint -c tslint.json -p tsconfig.json 'lib/**/*.ts'"
+    "lint": "eslint 'lib/**/*.ts'"
   },
   "devDependencies": {
     "@types/jest": "^23.3.10",
     "@types/node": "^10.12.11",
-    "jest": "^23.6.0",
-    "ts-jest": "^23.10.5",
-    "tslint": "^5.11.0",
-    "tslint-microsoft-contrib": "^5.2.1",
+    "@typescript-eslint/eslint-plugin": "^4.27.0",
+    "@typescript-eslint/parser": "^4.27.0",
+    "eslint": "^7.28.0",
+    "eslint-config-standard": "^16.0.3",
+    "eslint-plugin-import": "^2.23.4",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^5.1.0",
+    "jest": "^27.0.4",
+    "ts-jest": "^27.0.3",
     "typescript": "^3.2.1"
   },
   "dependencies": {
