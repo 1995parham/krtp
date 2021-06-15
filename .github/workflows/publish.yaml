@@ -5,6 +5,13 @@ on:
     branches:
       - main
 jobs:
+  build:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+      - run: npm install
+      - run: npm run build
   publish:
     name: publish
     runs-on: ubuntu-latest
