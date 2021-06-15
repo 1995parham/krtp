@@ -1,6 +1,5 @@
-# KRTP
+# Koochooloo RTP
 
-[![Travis branch](https://img.shields.io/travis/com/1995parham/krtp/master.svg?style=flat-square)](https://travis-ci.com/1995parham/krtp)
 [![GitHub stars](https://img.shields.io/github/stars/1995parham/krtp.svg?style=flat-square)](https://github.com/1995parham/krtp/stargazers)
 [![npm version](https://img.shields.io/npm/v/krtp.svg?style=flat-square)](https://www.npmjs.com/package/krtp)
 [![npm license](https://img.shields.io/npm/l/krtp.svg?style=flat-square)]()
