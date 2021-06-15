@@ -1,10 +1,10 @@
 # Koochooloo RTP
 
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/1995parham/krtp/test?label=test&logo=github&style=flat-square)
 [![GitHub stars](https://img.shields.io/github/stars/1995parham/krtp.svg?style=flat-square)](https://github.com/1995parham/krtp/stargazers)
 [![npm version](https://img.shields.io/npm/v/krtp.svg?style=flat-square)](https://www.npmjs.com/package/krtp)
 [![npm license](https://img.shields.io/npm/l/krtp.svg?style=flat-square)]()
 [![npm](https://img.shields.io/npm/dw/krtp.svg?style=flat-square)]()
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/8073505d59d241b6beeda1451a3bcf5e)](https://www.codacy.com/app/1995parham/krtp?utm_source=github.com&utm_medium=referral&utm_content=1995parham/krtp&utm_campaign=Badge_Grade)
 
 - [Introduction](#introduction)
 - [Example](#example)
