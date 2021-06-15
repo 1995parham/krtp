@@ -41,16 +41,16 @@ export class ControlSR {
 
     // buff[0] = (V << 6 | P << 5 | RC)
     if ((buff[0] & (0xc0 >> 6)) !== 2) {
-      throw new Error("Invalid RTCP packet");
+      throw new Error("invalid rtcp packet");
     }
     // buff[1] = PT
     if (buff[1] !== 200) {
-      throw new Error("Invalid RTCP packet");
+      throw new Error("invalid rtcp packet");
     }
     // buff[2, 3] = length
     const length: number = (buff.readUInt16BE(2) + 1) * 4;
     if (buff.length !== length) {
-      throw new Error("Invalid RTCP packet");
+      throw new Error("invalid rtcp packet");
     }
     // buff[4, 5, 6, 7] = SSRC
     const ssrc: number = buff.readUInt32BE(4);

@@ -7,16 +7,19 @@
  * | File Name:     session.ts
  * +===============================================
  */
-import { randomBytes } from 'crypto';
-import * as dgram from 'dgram';
-import { EventEmitter } from 'events';
-import { Observable, fromEvent } from 'rxjs';
+import { randomBytes } from "crypto";
+import * as dgram from "dgram";
+import { EventEmitter } from "events";
+import { Observable, fromEvent } from "rxjs";
 
-import { Packet } from './Packet';
-import { ControlSR } from './Control';
+import { Packet } from "./Packet";
+import { ControlSR } from "./Control";
 
 export declare interface Session {
-  on(event: 'message', listener: (msg: Packet, rinfo: dgram.RemoteInfo) => void): this;
+  on(
+    event: "message",
+    listener: (msg: Packet, rinfo: dgram.RemoteInfo) => void
+  ): this;
   on(event: string, listener: Function): this;
 }
 
@@ -70,13 +73,10 @@ export class Session extends EventEmitter {
    * @param packetType - RTP packet type: This field identifies the format of the RTP
    * payload and determines its interpretation by the application.
    */
-  constructor (
-    private port: number,
-    private packetType: number = 95
-  ) {
+  constructor(private port: number, private packetType: number = 95) {
     super();
 
-    this.timestamp = Date.now() / 1000 | 0;
+    this.timestamp = (Date.now() / 1000) | 0;
 
     this._sequenceNumber = randomBytes(2).readUInt16BE(0);
 
@@ -86,25 +86,35 @@ export class Session extends EventEmitter {
 
     this._octetCount = 0;
 
-    this.socket = dgram.createSocket('udp4');
+    this.socket = dgram.createSocket("udp4");
 
-    this.socket.on('message', (msg: Buffer, rinfo: dgram.RemoteInfo) => {
+    this.socket.on("message", (msg: Buffer, rinfo: dgram.RemoteInfo) => {
       const packet: Packet = Packet.deserialize(msg);
-      this.emit('message', packet, rinfo);
+      this.emit("message", packet, rinfo);
     });
     this.socket.bind(this.port);
 
-    this.controlSocket = dgram.createSocket('udp4');
+    this.controlSocket = dgram.createSocket("udp4");
     this.controlSocket.bind(this.port + 1);
   }
 
-  public async sendSR (address: string = '127.0.0.1', timestamp: number = (Date.now() / 1000 | 0) - this.timestamp): Promise<void> {
-
-    const packet = new ControlSR(this._packetCount, this._octetCount, this.ssrc, timestamp);
+  public async sendSR(
+    address: string = "127.0.0.1",
+    timestamp: number = ((Date.now() / 1000) | 0) - this.timestamp
+  ): Promise<void> {
+    const packet = new ControlSR(
+      this._packetCount,
+      this._octetCount,
+      this.ssrc,
+      timestamp
+    );
 
     return new Promise<void>((resolve, reject) => {
-      this.controlSocket.send(packet.serialize(), this.port + 1,
-        address, (err) => {
+      this.controlSocket.send(
+        packet.serialize(),
+        this.port + 1,
+        address,
+        (err) => {
           if (err) {
             return reject(err);
           }
@@ -114,9 +124,18 @@ export class Session extends EventEmitter {
     });
   }
 
-  public async send (payload: Buffer, address: string = '127.0.0.1', timestamp: number = (Date.now() / 1000 | 0) - this.timestamp): Promise<void> {
-
-    const packet = new Packet(payload, this._sequenceNumber, this.ssrc, timestamp, this.packetType);
+  public async send(
+    payload: Buffer,
+    address: string = "127.0.0.1",
+    timestamp: number = ((Date.now() / 1000) | 0) - this.timestamp
+  ): Promise<void> {
+    const packet = new Packet(
+      payload,
+      this._sequenceNumber,
+      this.ssrc,
+      timestamp,
+      this.packetType
+    );
     this._sequenceNumber = (this._sequenceNumber + 1) % (1 << 16);
     this._packetCount += 1;
     this._octetCount += payload.length;
@@ -131,12 +150,12 @@ export class Session extends EventEmitter {
     });
   }
 
-  public close (): void {
+  public close(): void {
     this.socket.close();
     this.controlSocket.close();
   }
 
-  public get message$ (): Observable<Packet> {
-    return fromEvent(this, 'message', (msg) => msg);
+  public get message$(): Observable<Packet> {
+    return fromEvent(this, "message", (msg) => msg);
   }
 }
