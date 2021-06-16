@@ -14,6 +14,7 @@ import { Observable, fromEvent } from "rxjs";
 
 import { Packet } from "./Packet";
 import { ControlSR } from "./Control";
+import { Readable, Writable } from "stream";
 
 export declare interface Session {
   on(
@@ -23,8 +24,51 @@ export declare interface Session {
   on(event: string, listener: Function): this;
 }
 
+export class ReadRTPStream extends Readable {
+  private onMessage: (msg: Packet | null) => void;
+
+  constructor(private session: Session) {
+    super();
+
+    this.onMessage = (msg: Packet | null) => {
+      if (msg === null) {
+        this.push(null);
+      } else {
+        if (!this.push(msg.payload)) {
+          this.session.removeListener("message", this.onMessage);
+        }
+      }
+    };
+  }
+
+  _read(_size?: number) {
+    if (this.session.listeners("message").indexOf(this.onMessage) === -1) {
+      this.session.on("message", this.onMessage);
+    }
+  }
+}
+
+export class WriteRTPStream extends Writable {
+  constructor(private session: Session, private destination: string) {
+    super();
+  }
+
+  _write(chunk: Buffer, _encoding: string, callback: (err?: Error) => void) {
+    this.session.send(chunk, this.destination).then(
+      () => callback(),
+      (err) => callback(err)
+    );
+  }
+
+  _destroy(err: Error, callback: (err: Error) => void) {
+    this.session.close();
+
+    callback(err);
+  }
+}
+
 /**
- * RTP session: An association among a set of participants
+ * RTP session: an association among a set of participants
  * communicating with RTP.
  */
 export class Session extends EventEmitter {
@@ -55,10 +99,10 @@ export class Session extends EventEmitter {
    */
   private _sequenceNumber: number;
 
-  // The total number of RTP data packets
+  // the total number of RTP data packets
   private _packetCount: number;
 
-  // The total number of payload octets
+  // the total number of payload octets
   private _octetCount: number;
 
   // socket for session's data communication
@@ -68,7 +112,7 @@ export class Session extends EventEmitter {
   private controlSocket: dgram.Socket;
 
   /**
-   * Creates a RTP session
+   * creates a RTP session with RTCP. please note that the port + 1 is used for rtcp communication.
    * @param port - RTP port
    * @param packetType - RTP packet type: This field identifies the format of the RTP
    * payload and determines its interpretation by the application.
@@ -92,13 +136,13 @@ export class Session extends EventEmitter {
       const packet: Packet = Packet.deserialize(msg);
       this.emit("message", packet, rinfo);
     });
-    this.socket.bind(this.port);
+    this.socket.bind(this.port, "0.0.0.0");
 
     this.controlSocket = dgram.createSocket("udp4");
     this.controlSocket.bind(this.port + 1);
   }
 
-  public async sendSR(
+  public sendSR(
     address: string = "127.0.0.1",
     timestamp: number = ((Date.now() / 1000) | 0) - this.timestamp
   ): Promise<void> {
@@ -124,7 +168,7 @@ export class Session extends EventEmitter {
     });
   }
 
-  public async send(
+  public send(
     payload: Buffer,
     address: string = "127.0.0.1",
     timestamp: number = ((Date.now() / 1000) | 0) - this.timestamp
@@ -151,7 +195,10 @@ export class Session extends EventEmitter {
   }
 
   public close(): void {
-    this.socket.close();
+    this.socket.close(() => {
+      // sending null to close the read streams.
+      this.emit("message", null);
+    });
     this.controlSocket.close();
   }
 
