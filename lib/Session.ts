@@ -21,22 +21,21 @@ export declare interface Session {
     event: "message",
     listener: (msg: Packet, rinfo: dgram.RemoteInfo) => void
   ): this;
+  on(event: "close", listener: () => void): this;
   on(event: string, listener: Function): this;
 }
 
 export class ReadRTPStream extends Readable {
-  private onMessage: (msg: Packet | null) => void;
+  private onMessage: (msg: Packet) => void;
 
   constructor(private session: Session) {
     super();
 
-    this.onMessage = (msg: Packet | null) => {
-      if (msg === null) {
-        this.push(null);
-      } else {
-        if (!this.push(msg.payload)) {
-          this.session.removeListener("message", this.onMessage);
-        }
+    this.session.on("close", () => this.push(null));
+
+    this.onMessage = (msg: Packet) => {
+      if (!this.push(msg.payload)) {
+        this.session.removeListener("message", this.onMessage);
       }
     };
   }
@@ -196,8 +195,7 @@ export class Session extends EventEmitter {
 
   public close(): void {
     this.socket.close(() => {
-      // sending null to close the read streams.
-      this.emit("message", null);
+      this.emit("close");
     });
     this.controlSocket.close();
   }
