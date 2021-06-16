@@ -1,9 +1,8 @@
 {
   "name": "krtp",
-  "version": "3.2.0",
+  "version": "3.2.1",
   "description": "Node implementation of rdp protocol. RFC 3550",
   "main": "dist/index.js",
-  "types": "dist/index.d.ts",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/1995parham/krtp"
