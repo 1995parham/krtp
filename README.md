@@ -1,6 +1,6 @@
 # Koochooloo RTP
 
-![GitHub Workflow Status](https://img.shields.io/github/workflow/status/1995parham/krtp/test?label=test&logo=github&style=flat-square)
+![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/1995parham/krtp/test.yaml?label=test&logo=github&style=flat-square&branch=main)
 [![npm version](https://img.shields.io/npm/v/krtp.svg?style=flat-square&logo=npm)](https://www.npmjs.com/package/krtp)
 [![npm](https://img.shields.io/npm/dw/krtp.svg?style=flat-square&logo=npm)](https://www.npmjs.com/package/krtp)
 
