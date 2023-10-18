@@ -71,7 +71,7 @@ export class Packet {
     if ((buff[0] & 0xc0) >> 6 !== 2) {
       throw new Error(`invalid rtp packet ${buff[0] & 0xc0}`);
     }
-    const cc = buff[0] & 0x1f;
+    const cc = buff[0] & 0x0f;
     /* buff[1] = (M << 7 | PT) */
     const payloadType = buff[1] & 0x7f;
     /* buff[2, 3] = SN */
