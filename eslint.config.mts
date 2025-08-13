@@ -1,3 +1,4 @@
+// @ts-ignore
 import js from "@eslint/js";
 import globals from "globals";
 import tseslint from "typescript-eslint";
@@ -10,5 +11,5 @@ export default defineConfig([
     extends: ["js/recommended"],
     languageOptions: { globals: globals.browser },
   },
-  tseslint.configs.recommended, // @ts-ignore
+  tseslint.configs.recommended,
 ]);
