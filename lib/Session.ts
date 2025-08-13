@@ -19,7 +19,7 @@ import { Readable, Writable } from "stream";
 export declare interface Session {
   on(
     event: "message",
-    listener: (msg: Packet, rinfo: dgram.RemoteInfo) => void
+    listener: (msg: Packet, rinfo: dgram.RemoteInfo) => void,
   ): this;
   on(event: "close", listener: () => void): this;
   on(event: string, listener: Function): this;
@@ -48,14 +48,17 @@ export class ReadRTPStream extends Readable {
 }
 
 export class WriteRTPStream extends Writable {
-  constructor(private session: Session, private destination: string) {
+  constructor(
+    private session: Session,
+    private destination: string,
+  ) {
     super();
   }
 
   _write(chunk: Buffer, _encoding: string, callback: (err?: Error) => void) {
     this.session.send(chunk, this.destination).then(
       () => callback(),
-      (err) => callback(err)
+      (err) => callback(err),
     );
   }
 
@@ -116,7 +119,10 @@ export class Session extends EventEmitter {
    * @param packetType - RTP packet type: This field identifies the format of the RTP
    * payload and determines its interpretation by the application.
    */
-  constructor(private port: number, private packetType: number = 95) {
+  constructor(
+    private port: number,
+    private packetType: number = 95,
+  ) {
     super();
 
     this.timestamp = (Date.now() / 1000) | 0;
@@ -143,13 +149,13 @@ export class Session extends EventEmitter {
 
   public sendSR(
     address: string = "127.0.0.1",
-    timestamp: number = ((Date.now() / 1000) | 0) - this.timestamp
+    timestamp: number = ((Date.now() / 1000) | 0) - this.timestamp,
   ): Promise<void> {
     const packet = new ControlSR(
       this._packetCount,
       this._octetCount,
       this.ssrc,
-      timestamp
+      timestamp,
     );
 
     return new Promise<void>((resolve, reject) => {
@@ -162,7 +168,7 @@ export class Session extends EventEmitter {
             return reject(err);
           }
           return resolve();
-        }
+        },
       );
     });
   }
@@ -170,14 +176,14 @@ export class Session extends EventEmitter {
   public send(
     payload: Buffer,
     address: string = "127.0.0.1",
-    timestamp: number = ((Date.now() / 1000) | 0) - this.timestamp
+    timestamp: number = ((Date.now() / 1000) | 0) - this.timestamp,
   ): Promise<void> {
     const packet = new Packet(
       payload,
       this._sequenceNumber,
       this.ssrc,
       timestamp,
-      this.packetType
+      this.packetType,
     );
     this._sequenceNumber = (this._sequenceNumber + 1) % (1 << 16);
     this._packetCount += 1;
