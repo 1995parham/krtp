@@ -27,20 +27,20 @@
     "lint": "eslint 'lib/**/*.ts'"
   },
   "devDependencies": {
-    "@types/jest": "^23.3.10",
-    "@types/node": "^10.17.60",
-    "@typescript-eslint/eslint-plugin": "^4.27.0",
-    "@typescript-eslint/parser": "^4.27.0",
-    "eslint": "^7.28.0",
-    "eslint-plugin-import": "^2.23.4",
+    "@types/jest": "^30.0.0",
+    "@types/node": "^24.2.1",
+    "@typescript-eslint/eslint-plugin": "^8.39.1",
+    "@typescript-eslint/parser": "^8.39.1",
+    "eslint": "^9.33.0",
+    "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-prettier": "^3.4.0",
-    "eslint-plugin-promise": "^5.1.0",
-    "jest": "^27.0.4",
-    "ts-jest": "^27.0.3",
-    "typescript": "^3.2.1"
+    "eslint-plugin-prettier": "^5.5.4",
+    "eslint-plugin-promise": "^7.2.1",
+    "jest": "^30.0.5",
+    "ts-jest": "^29.4.1",
+    "typescript": "^5.9.2"
   },
   "dependencies": {
-    "rxjs": "^6.3.3"
+    "rxjs": "^7.8.2"
   }
 }
