@@ -7,32 +7,30 @@
  * | File Name:     test.js
  * +===============================================
  */
-/* eslint-env mocha */
+import * as assert from "assert";
+import { range } from "rxjs";
+import { filter } from "rxjs/operators";
 
-import * as assert from 'assert';
-import { range } from 'rxjs';
-import { filter } from 'rxjs/operators';
+import { Session } from "../index.js";
 
-import { Session } from '../index.js';
+import { Packet } from "../lib/index.js";
 
-import { Packet } from '../lib/index.js';
-
-describe('RTPSession', () => {
-  test('packet send-recieve serialize-deserialize', (done) => {
+describe("RTPSession", () => {
+  test("packet send-recieve serialize-deserialize", (done) => {
     const s = new Session(1373);
-    s.on('message', (msg: Packet) => {
+    s.on("message", (msg: Packet) => {
       assert.equal(s.sequenceNumber, msg.sequenceNumber + 1);
       assert.equal(s.ssrc, msg.ssrc);
-      assert.equal('Hello world', msg.payload.toString());
+      assert.equal("Hello world", msg.payload.toString());
       s.close();
       done();
     });
-    s.send(Buffer.from('Hello world')).catch((err) => {
+    s.send(Buffer.from("Hello world")).catch((err) => {
       done(err);
     });
   });
 
-  test('rxjs', (done) => {
+  test("rxjs", (done) => {
     const s = new Session(1372, 72);
     const initialSequenceNumber = s.sequenceNumber;
 
@@ -41,7 +39,7 @@ describe('RTPSession', () => {
       .subscribe({
         next: (msg) => {
           assert.equal(72, msg.payloadType);
-          assert.equal('Hello world of rxjs - 10', msg.payload.toString());
+          assert.equal("Hello world of rxjs - 10", msg.payload.toString());
           s.close();
           done();
         },
@@ -57,4 +55,3 @@ describe('RTPSession', () => {
     });
   });
 });
-
