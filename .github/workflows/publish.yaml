@@ -6,9 +6,9 @@ on:
       - main
 jobs:
   build:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v5
       - uses: actions/setup-node@v2
       - run: npm install
       - run: npm run build
@@ -16,7 +16,7 @@ jobs:
     name: publish
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v5
       - uses: actions/setup-node@v2
       - run: npm install
       - name: publish if version has been updated
