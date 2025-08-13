@@ -56,7 +56,11 @@ export class Packet {
 
     /* CSRC section */
     for (let i = 0; i < this.csrc.length; i++) {
-      buff.writeUInt32BE(this.csrc[i], 12 + i * 4);
+      const csrc = this.csrc[i];
+      if (csrc === undefined) {
+        continue;
+      }
+      buff.writeUInt32BE(csrc, 12 + i * 4);
     }
 
     this.payload.copy(buff, 12 + this.csrc.length * 4, 0);
@@ -65,15 +69,21 @@ export class Packet {
   }
 
   static deserialize(buff: Buffer): Packet {
+    if (buff.length < 12) {
+      throw new Error("invalid rtp packet");
+    }
     const csrc: Array<number> = [];
 
     /* buff[0] = (V << 6 | P << 5 | X << 4 | CC) */
-    if ((buff[0] & 0xc0) >> 6 !== 2) {
-      throw new Error(`invalid rtp packet ${buff[0] & 0xc0}`);
+    if ((buff[0]! & 0xc0) >> 6 !== 2) {
+      throw new Error(`invalid rtp packet ${buff[0]! & 0xc0}`);
     }
-    const cc = buff[0] & 0x0f;
+    const cc = buff[0]! & 0x0f;
+    if (buff.length < 12 + cc * 4) {
+      throw new Error("invalid rtp packet");
+    }
     /* buff[1] = (M << 7 | PT) */
-    const payloadType = buff[1] & 0x7f;
+    const payloadType = buff[1]! & 0x7f;
     /* buff[2, 3] = SN */
     const sequenceNumber = buff.readUInt16BE(2);
     /* buff[4, 5, 6, 7] = TS */

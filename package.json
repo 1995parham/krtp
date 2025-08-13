@@ -3,6 +3,7 @@
   "version": "3.2.1",
   "description": "Node implementation of rtp protocol. RFC 3550",
   "main": "dist/index.js",
+  "type": "module",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/1995parham/krtp"

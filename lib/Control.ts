@@ -37,18 +37,24 @@ export class ControlSR {
   }
 
   public static deserialize(buff: Buffer): ControlSR {
+    if (buff.length < 28) {
+      throw new Error("invalid rtcp packet");
+    }
     // header
 
     // buff[0] = (V << 6 | P << 5 | RC)
-    if ((buff[0] & (0xc0 >> 6)) !== 2) {
+    if ((buff[0]! & (0xc0 >> 6)) !== 2) {
       throw new Error("invalid rtcp packet");
     }
     // buff[1] = PT
-    if (buff[1] !== 200) {
+    if (buff[1]! !== 200) {
       throw new Error("invalid rtcp packet");
     }
     // buff[2, 3] = length
     const length: number = (buff.readUInt16BE(2) + 1) * 4;
+    if (buff.length < length) {
+      throw new Error("invalid rtcp packet");
+    }
     if (buff.length !== length) {
       throw new Error("invalid rtcp packet");
     }

@@ -12,18 +12,9 @@ import * as dgram from "dgram";
 import { EventEmitter } from "events";
 import { Observable, fromEvent } from "rxjs";
 
-import { Packet } from "./Packet";
-import { ControlSR } from "./Control";
+import { Packet } from "./Packet.js";
+import { ControlSR } from "./Control.js";
 import { Readable, Writable } from "stream";
-
-export declare interface Session {
-  on(
-    event: "message",
-    listener: (msg: Packet, rinfo: dgram.RemoteInfo) => void,
-  ): this;
-  on(event: "close", listener: () => void): this;
-  on(event: string, listener: Function): this;
-}
 
 export class ReadRTPStream extends Readable {
   private onMessage: (msg: Packet) => void;
@@ -40,7 +31,7 @@ export class ReadRTPStream extends Readable {
     };
   }
 
-  _read(_size?: number) {
+  _read() {
     if (this.session.listeners("message").indexOf(this.onMessage) === -1) {
       this.session.on("message", this.onMessage);
     }
@@ -74,6 +65,16 @@ export class WriteRTPStream extends Writable {
  * communicating with RTP.
  */
 export class Session extends EventEmitter {
+  public on(
+    event: "message" | "close" | string,
+    listener:
+      | ((msg: Packet, rinfo: dgram.RemoteInfo) => void)
+      | (() => void)
+      | ((...args: unknown[]) => void),
+  ): this {
+    return super.on(event, listener as (...args: any[]) => void);
+  }
+
   /*
    * The SSRC field identifies
    * the synchronization source

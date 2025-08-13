@@ -1,10 +1,10 @@
-import { Session, ReadRTPStream, WriteRTPStream } from "..";
+import { Session, ReadRTPStream, WriteRTPStream } from "../index.js";
 
 const s = new Session(1372);
 const r = new ReadRTPStream(s);
 const w = new WriteRTPStream(s, "127.0.0.1");
 
-r.on("data", (chunk) => {
+r.on("data", (chunk: Buffer) => {
   console.log(chunk.toString());
 });
 
