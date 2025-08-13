@@ -9,7 +9,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      - uses: actions/setup-node@v5
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "current"
       - run: npm install
       - run: npm run build
   publish:
