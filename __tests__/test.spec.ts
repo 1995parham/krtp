@@ -11,8 +11,7 @@ import * as assert from "assert";
 import { range } from "rxjs";
 import { filter } from "rxjs/operators";
 
-import { Session } from "../index.js";
-
+import { Session } from "../lib/index.js";
 import { Packet } from "../lib/index.js";
 
 describe("RTPSession", () => {
