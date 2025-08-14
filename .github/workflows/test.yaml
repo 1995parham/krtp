@@ -21,5 +21,4 @@ jobs:
         with:
           node-version: "current"
       - run: npm install
-      - run: npm run build
       - run: npm run test
