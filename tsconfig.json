@@ -11,6 +11,7 @@
     "target": "esnext",
     "lib": ["esnext"],
     "types": ["node", "jest"],
+    "allowImportingTsExtensions": true,
     // and npm install -D @types/node
     // Other Outputs
     "sourceMap": false,

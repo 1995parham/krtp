@@ -11,8 +11,8 @@ import * as assert from "assert";
 import { range } from "rxjs";
 import { filter } from "rxjs/operators";
 
-import { Session } from "../lib/index.js";
-import { Packet } from "../lib/index.js";
+import { Session } from "../lib";
+import { Packet } from "../lib";
 
 describe("RTPSession", () => {
   test("packet send-recieve serialize-deserialize", (done) => {

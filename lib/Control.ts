@@ -27,7 +27,7 @@ export class ControlSR {
     octetCount: number,
     ssrc: number,
     timestamp: number,
-    ntpTimestamp: number = Date.now()
+    ntpTimestamp: number = Date.now(),
   ) {
     this.packetCount = packetCount;
     this.octetCount = octetCount;
@@ -79,7 +79,7 @@ export class ControlSR {
       octetCount,
       ssrc,
       timestamp,
-      ntpTimestamp
+      ntpTimestamp,
     );
   }
 

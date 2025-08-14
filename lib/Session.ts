@@ -12,8 +12,8 @@ import * as dgram from "dgram";
 import { EventEmitter } from "events";
 import { Observable, fromEvent } from "rxjs";
 
-import { Packet } from "./Packet.js";
-import { ControlSR } from "./Control.js";
+import { Packet } from "./Packet.ts";
+import { ControlSR } from "./Control.ts";
 import { Readable, Writable } from "stream";
 
 export class ReadRTPStream extends Readable {
@@ -66,13 +66,10 @@ export class WriteRTPStream extends Writable {
  */
 export class Session extends EventEmitter {
   public on(
-    event: "message" | "close" | string,
-    listener:
-      | ((msg: Packet, rinfo: dgram.RemoteInfo) => void)
-      | (() => void)
-      | ((...args: unknown[]) => void),
+    event: "message" | "close",
+    listener: ((msg: Packet, rinfo: dgram.RemoteInfo) => void) | (() => void),
   ): this {
-    return super.on(event, listener as (...args: any[]) => void);
+    return super.on(event, listener);
   }
 
   /*

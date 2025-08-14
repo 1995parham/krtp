@@ -1,6 +1,6 @@
 /**
  * krtp implements real-time protocol based on RFC 3350.
  */
-export * from "./Packet.js";
-export * from "./Session.js";
-export * from "./Control.js";
+export * from "./Packet.ts";
+export * from "./Session.ts";
+export * from "./Control.ts";
