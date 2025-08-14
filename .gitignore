@@ -35,4 +35,3 @@ jspm_packages
 
 # Typescript
 /dist
-*.js
