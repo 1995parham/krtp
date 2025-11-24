@@ -43,7 +43,7 @@ export class ControlSR {
     // header
 
     // buff[0] = (V << 6 | P << 5 | RC)
-    if (buff[0]! >> 6 !== 2) {
+    if ((buff[0]! & (0xc0 >> 6)) !== 2) {
       throw new Error("invalid rtcp packet");
     }
     // buff[1] = PT

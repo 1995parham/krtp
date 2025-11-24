@@ -20,7 +20,7 @@ KRTP has support for rxjs.
 ## Example
 
 ```javascript
-import { Session } from "krtp";
+const Session = require("../dist").Session;
 
 const s = new Session(1373);
 
@@ -36,7 +36,7 @@ s.send(Buffer.from("Hello world"));
 ```
 
 ```typescript
-import { Session } from "krtp";
+import { Session } from "..";
 
 const s = new Session(1372);
 s.message$.subscribe((msg) => console.log(msg));

@@ -12,8 +12,8 @@ import * as dgram from "dgram";
 import { EventEmitter } from "events";
 import { Observable, fromEvent } from "rxjs";
 
-import { Packet } from "./Packet.js";
-import { ControlSR } from "./Control.js";
+import { Packet } from "./Packet.ts";
+import { ControlSR } from "./Control.ts";
 import { Readable, Writable } from "stream";
 
 export class ReadRTPStream extends Readable {
