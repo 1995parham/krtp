@@ -24,7 +24,7 @@ export class Packet {
     sequenceNumber: number,
     ssrc: number,
     timestamp: number = 0,
-    payloadType: number = 95
+    payloadType: number = 95,
   ) {
     this.payload = payload;
     this.sequenceNumber = sequenceNumber;
@@ -34,13 +34,22 @@ export class Packet {
   }
 
   public addCSRC(csrc: number): void {
-    /* TODO: csrc must be a 32 bit integer */
+    // CSRC must be a 32-bit unsigned integer
+    if (!Number.isInteger(csrc) || csrc < 0 || csrc > 0xffffffff) {
+      throw new Error(
+        "CSRC must be a 32-bit unsigned integer (0 to 0xFFFFFFFF)",
+      );
+    }
+    // CC field is only 4 bits, so maximum 15 CSRCs allowed
+    if (this.csrc.length >= 15) {
+      throw new Error("Maximum of 15 CSRCs allowed (CC field is 4 bits)");
+    }
     this.csrc.push(csrc);
   }
 
   public serialize(): Buffer {
     const buff: Buffer = Buffer.alloc(
-      12 + 4 * this.csrc.length + this.payload.length
+      12 + 4 * this.csrc.length + this.payload.length,
     );
 
     /* buff[0] = (V << 6 | P << 5 | X << 4 | CC) */
@@ -103,7 +112,7 @@ export class Packet {
       sequenceNumber,
       ssrc,
       timestamp,
-      payloadType
+      payloadType,
     );
 
     for (const s of csrc) {

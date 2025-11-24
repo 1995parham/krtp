@@ -7,9 +7,9 @@
     "outDir": "./dist",
     // Environment Settings
     // See also https://aka.ms/tsconfig/module
-    "module": "nodenext",
-    "target": "esnext",
-    "lib": ["esnext"],
+    "module": "node20",
+    "target": "es2023",
+    "lib": ["es2023"],
     "types": ["node", "jest"],
     "allowImportingTsExtensions": true,
     "noEmit": true,

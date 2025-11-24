@@ -24,6 +24,7 @@ jobs:
           node-version: "current"
       - run: npm install
       - name: publish if version has been updated
+        id: publish
         uses: JS-DevTools/npm-publish@v1
         with:
           token: ${{ secrets.NPM_AUTH_TOKEN }}
