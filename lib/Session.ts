@@ -53,11 +53,27 @@ export class WriteRTPStream extends Writable {
     );
   }
 
-  _destroy(err: Error, callback: (err: Error) => void) {
+  _destroy(err: Error | null, callback: (err: Error | null) => void) {
     this.session.close();
 
     callback(err);
   }
+}
+
+/** Events emitted by {@link Session}. */
+export interface SessionEvents {
+  /** An RTP data packet arrived on the data port. */
+  message: (msg: Packet, rinfo: dgram.RemoteInfo) => void;
+  /** An RTCP sender report arrived on the control port. */
+  sr: (report: ControlSR, rinfo: dgram.RemoteInfo) => void;
+  /**
+   * A socket failed or a malformed datagram was received. Unlike a bare
+   * EventEmitter, a session never throws when nobody listens for this
+   * event; the datagram is simply dropped.
+   */
+  error: (err: Error) => void;
+  /** Both sockets are closed. */
+  close: () => void;
 }
 
 /**
@@ -65,11 +81,18 @@ export class WriteRTPStream extends Writable {
  * communicating with RTP.
  */
 export class Session extends EventEmitter {
-  public on(
-    event: "message" | "close",
-    listener: ((msg: Packet, rinfo: dgram.RemoteInfo) => void) | (() => void),
+  public override on<E extends keyof SessionEvents>(
+    event: E,
+    listener: SessionEvents[E],
   ): this {
     return super.on(event, listener);
+  }
+
+  public override once<E extends keyof SessionEvents>(
+    event: E,
+    listener: SessionEvents[E],
+  ): this {
+    return super.once(event, listener);
   }
 
   /*
@@ -111,6 +134,8 @@ export class Session extends EventEmitter {
   // socket for session's control communication
   private controlSocket: dgram.Socket;
 
+  private closed = false;
+
   /**
    * creates a RTP session with RTCP. please note that the port + 1 is used for rtcp communication.
    * @param port - RTP port
@@ -134,15 +159,33 @@ export class Session extends EventEmitter {
     this._octetCount = 0;
 
     this.socket = dgram.createSocket("udp4");
-
+    this.socket.on("error", (err) => this.emitError(err));
     this.socket.on("message", (msg: Buffer, rinfo: dgram.RemoteInfo) => {
-      const packet: Packet = Packet.deserialize(msg);
+      // a malformed datagram from any peer must not take the process down
+      let packet: Packet;
+      try {
+        packet = Packet.deserialize(msg);
+      } catch (err) {
+        this.emitError(err as Error);
+        return;
+      }
       this.emit("message", packet, rinfo);
     });
     this.socket.bind(this.port, "0.0.0.0");
 
     this.controlSocket = dgram.createSocket("udp4");
-    this.controlSocket.bind(this.port + 1);
+    this.controlSocket.on("error", (err) => this.emitError(err));
+    this.controlSocket.on("message", (msg: Buffer, rinfo: dgram.RemoteInfo) => {
+      let report: ControlSR;
+      try {
+        report = ControlSR.deserialize(msg);
+      } catch (err) {
+        this.emitError(err as Error);
+        return;
+      }
+      this.emit("sr", report, rinfo);
+    });
+    this.controlSocket.bind(this.port + 1, "0.0.0.0");
   }
 
   public sendSR(
@@ -184,8 +227,9 @@ export class Session extends EventEmitter {
       this.packetType,
     );
     this._sequenceNumber = (this._sequenceNumber + 1) % (1 << 16);
-    this._packetCount += 1;
-    this._octetCount += payload.length;
+    // both counters are 32-bit fields on the wire and wrap around
+    this._packetCount = (this._packetCount + 1) >>> 0;
+    this._octetCount = (this._octetCount + payload.length) >>> 0;
 
     return new Promise<void>((resolve, reject) => {
       this.socket.send(packet.serialize(), this.port, address, (err) => {
@@ -197,14 +241,38 @@ export class Session extends EventEmitter {
     });
   }
 
+  /**
+   * closes both sockets. "close" is emitted once both are closed.
+   * calling it more than once is a no-op.
+   */
   public close(): void {
-    this.socket.close(() => {
-      this.emit("close");
-    });
-    this.controlSocket.close();
+    if (this.closed) {
+      return;
+    }
+    this.closed = true;
+
+    let pending = 2;
+    const done = () => {
+      pending -= 1;
+      if (pending === 0) {
+        this.emit("close");
+      }
+    };
+    this.socket.close(done);
+    this.controlSocket.close(done);
   }
 
   public get message$(): Observable<Packet> {
-    return fromEvent(this, "message", (msg) => msg);
+    return fromEvent(this, "message", (msg: Packet) => msg);
+  }
+
+  public get sr$(): Observable<ControlSR> {
+    return fromEvent(this, "sr", (report: ControlSR) => report);
+  }
+
+  private emitError(err: Error): void {
+    if (this.listenerCount("error") > 0) {
+      this.emit("error", err);
+    }
   }
 }
