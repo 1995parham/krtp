@@ -1,4 +1,4 @@
-import { Session, ReadRTPStream, WriteRTPStream } from "../index.js";
+import { Session, ReadRTPStream, WriteRTPStream } from "../index.ts";
 
 const s = new Session(1372);
 const r = new ReadRTPStream(s);

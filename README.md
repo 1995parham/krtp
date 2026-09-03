@@ -8,19 +8,26 @@
 </div>
 
 - [Introduction](#introduction)
+- [Installation](#installation)
 - [Example](#example)
-- [Protocol Documentation](https://github.com/1995parham/krtp/blob/master/docs/RTP.md)
+- [Protocol Documentation](https://github.com/1995parham/krtp/blob/main/docs/RTP.md)
 
 ## Introduction
 
-RealTime Protocol implementation based on [RFC 3550](https://tools.ietf.org/html/rfc3550) in NodeJS.
-It supports RTP and SR message of RTCP. All contributions are welcome.
-KRTP has support for rxjs.
+RealTime Protocol implementation based on [RFC 3550](https://tools.ietf.org/html/rfc3550) in NodeJS. It supports RTP and SR message of RTCP. All contributions are welcome. KRTP has support for rxjs and Node streams.
+
+## Installation
+
+```bash
+npm install krtp
+```
+
+krtp is an ES module and requires Node.js 20 or newer.
 
 ## Example
 
 ```javascript
-const Session = require("../dist").Session;
+import { Session } from "krtp";
 
 const s = new Session(1373);
 
@@ -36,8 +43,10 @@ s.send(Buffer.from("Hello world"));
 ```
 
 ```typescript
-import { Session } from "..";
+import { Session } from "krtp";
 
 const s = new Session(1372);
 s.message$.subscribe((msg) => console.log(msg));
 ```
+
+A session binds the RTP port and the RTCP port (port + 1). Malformed datagrams are dropped and reported through the `error` event when a listener is attached; they never crash the process. Incoming sender reports are emitted as `sr` events or through the `sr$` observable.
