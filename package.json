@@ -22,7 +22,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/1995parham/krtp"
+    "url": "git+https://github.com/1995parham/krtp.git"
   },
   "author": "Parham Alvani <parham.alvani@gmail.com>",
   "license": "GPL-3.0",

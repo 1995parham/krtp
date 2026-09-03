@@ -12,20 +12,36 @@ jobs:
   publish:
     name: publish
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      # required for npm trusted publishing (OIDC) and provenance attestations
+      id-token: write
     steps:
       - uses: actions/checkout@v6
       - uses: actions/setup-node@v4
         with:
           node-version: "lts/*"
+          registry-url: https://registry.npmjs.org
           cache: npm
+      # trusted publishing needs npm 11.5.1 or newer
+      - run: npm install -g npm@latest
       - run: npm ci
       - run: npm run build
       - run: npm test
-      - name: publish if version has been updated
-        id: publish
-        uses: JS-DevTools/npm-publish@v3
-        with:
-          token: ${{ secrets.NPM_AUTH_TOKEN }}
-      - if: steps.publish.outputs.type != ''
+      - name: check whether this version is already on npm
+        id: version
         run: |
-          echo "Version changed: ${{ steps.publish.outputs.old-version }} => ${{ steps.publish.outputs.version }}"
+          name=$(node -p "require('./package.json').name")
+          version=$(node -p "require('./package.json').version")
+          if npm view "$name@$version" version >/dev/null 2>&1; then
+            echo "$name@$version is already published, skipping"
+            echo "publish=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "publish=true" >> "$GITHUB_OUTPUT"
+          fi
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+      - name: publish to npm
+        if: steps.version.outputs.publish == 'true'
+        run: npm publish --provenance --access public
+      - if: steps.version.outputs.publish == 'true'
+        run: echo "published krtp@${{ steps.version.outputs.version }}"
