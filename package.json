@@ -53,8 +53,8 @@
     "@jest/globals": "^30.5.2",
     "@types/jest": "^30.0.0",
     "@types/node": "^24.10.1",
-    "@typescript-eslint/eslint-plugin": "^8.72.1",
-    "@typescript-eslint/parser": "^8.72.1",
+    "@typescript-eslint/eslint-plugin": "^8.72.2",
+    "@typescript-eslint/parser": "^8.72.2",
     "babel-jest": "^30.5.2",
     "eslint": "^9.39.1",
     "eslint-plugin-import": "^2.32.0",
@@ -65,7 +65,7 @@
     "jest": "^30.5.2",
     "jiti": "^2.7.0",
     "typescript": "^6.0.3",
-    "typescript-eslint": "^8.72.1"
+    "typescript-eslint": "^8.72.2"
   },
   "dependencies": {
     "rxjs": "^7.8.2"
